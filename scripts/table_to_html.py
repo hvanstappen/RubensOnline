@@ -175,5 +175,5 @@ KOLOMMEN = ["name", "label@nl", "Definition", "Data Type", "ValueList", "Obligat
 html_result = sheet_to_html(URL, MODEL_TAB, VOCAB_TAB, KOLOMMEN)
 
 
-with open("../model/index.html", "w", encoding="utf-8") as f:
+with open("../docs/index.html", "w", encoding="utf-8") as f:
     f.write(html_result)
