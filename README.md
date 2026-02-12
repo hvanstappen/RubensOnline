@@ -1,2 +1,4 @@
 # RubensOnline
-Browsable version https://datable-be.github.io/RubensOnline
+
+## Data model
+ [Browsable version](https://hvanstappen.github.io/RubensOnline/)
