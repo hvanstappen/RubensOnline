@@ -173,8 +173,7 @@ VOCAB_TAB = "Vocabulary"
 KOLOMMEN = ["name", "label@nl", "Definition", "Data Type", "ValueList", "Obligation", "Condition", "Repeatability", "RKD", "Comments", "Example", "Internal Note"]
 
 html_result = sheet_to_html(URL, MODEL_TAB, VOCAB_TAB, KOLOMMEN)
-with open("Rubensonline_model.html", "w", encoding="utf-8") as f:
-    f.write(html_result)
+
 
 with open("../model/index.html", "w", encoding="utf-8") as f:
     f.write(html_result)
