@@ -11,11 +11,11 @@ def sheet_to_html(sheet_url, datamodel_sheet, vocab_sheet, columns_to_include):
 
         # Voorbereiden Waardenlijsten
         vocab_dict = {}
-        for col_idx in range(0, len(df_vocab.columns), 2):
+        for col_idx in range(0, len(df_vocab.columns), 3):
             list_name = df_vocab.columns[col_idx]
-            items = df_vocab.iloc[:, [col_idx, col_idx + 1]].dropna(how='all')
+            items = df_vocab.iloc[:, [col_idx, col_idx + 1, col_idx + 2]].dropna(how='all')
             if not items.empty:
-                items.columns = ['Label', 'URI']
+                items.columns = ['Label@nl', 'label@en', 'URI']  # Note the lowercase in label@en
                 vocab_dict[list_name] = items.to_dict('records')
 
         # Fallbacks voor groepering
@@ -79,6 +79,7 @@ def sheet_to_html(sheet_url, datamodel_sheet, vocab_sheet, columns_to_include):
                                 display_content = f'<a href="{display_content}" target="_blank">{display_content}</a>'
                             else:
                                 display_content = display_content.replace('\n', '<br>')
+                                display_content = display_content.replace('nan', '--')  # Replace 'nan' with '--'
 
                             content_html += f'<tr><th>{col}</th><td>{display_content}</td></tr>'
 
@@ -95,11 +96,16 @@ def sheet_to_html(sheet_url, datamodel_sheet, vocab_sheet, columns_to_include):
         for list_name, items in vocab_dict.items():
             vocab_id = f"vocab_{list_name.replace(' ', '_').lower()}"
             toc_html += f'<li><a href="#{vocab_id}">{list_name}</a></li>'
-            vocab_section_html += f'<section id="{vocab_id}" class="card vocab-card"><h3 class="class-header-value">Waardenlijst: <strong>{list_name}</strong></h3><table><thead><tr><th>Label</th><th>URI</th></tr></thead><tbody>'
+            vocab_section_html += f'<section id="{vocab_id}" class="card vocab-card"><h3 class="class-header-value">Waardenlijst: <strong>{list_name}</strong></h3>'
+            vocab_section_html += f'<table><thead><tr><th>Label@nl</th><th>Label@en</th><th>URI</th></tr></thead><tbody>'
             for item in items[1:]:
                 uri_display = f'<a href="{item["URI"]}" target="_blank">{item["URI"]}</a>' if str(
                     item["URI"]).startswith("http") else item["URI"]
-                vocab_section_html += f'<tr><td>{item["Label"]}</td><td>{uri_display}</td></tr>'
+                # Use the correct column name 'label@en' (lowercase)
+                label_nl = '--' if pd.isna(item["Label@nl"]) or str(item["Label@nl"]).lower() == 'nan' else item["Label@nl"]
+                label_en = '--' if pd.isna(item["label@en"]) or str(item["label@en"]).lower() == 'nan' else item["label@en"]
+                uri_display = '--' if pd.isna(item["URI"]) or str(item["URI"]).lower() == 'nan' else uri_display
+                vocab_section_html += f'<tr><td>{label_nl}</td><td>{label_en}</td><td>{uri_display}</td></tr>'
             vocab_section_html += '</tbody></table></section>'
         toc_html += '</ul></details>'
 

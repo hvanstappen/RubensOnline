@@ -2,11 +2,16 @@ import requests
 import csv
 import time
 from typing import List, Dict, Any
+import re
+import os
 
 # Instellingen
 ENDPOINT = "https://termennetwerk-api.netwerkdigitaalerfgoed.nl/graphql"
-INPUT_FILE = '/home/henk/DATABLE/1_Projecten/2025_RubensOnline/3_Data_analyse/export_RKDImages_RubensOnline/extracted_values/objectcategorie_test.csv'
-OUTPUT_FILE = 'result_aat.csv'
+INPUT_FILE = '/home/henk/DATABLE/1_Projecten/2025_RubensOnline/3_Data_analyse/export_RKDImages_RubensOnline/extracted_values/objectcategorie.csv'
+OUTPUT_FILE = re.findall(r'(.*)\.csv', INPUT_FILE)[0] + '_aat_uris.csv'
+
+# Create the reconciled_values directory if it doesn't exist
+os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
 
 QUERY = """
 query GetTerms($search: String!) {
